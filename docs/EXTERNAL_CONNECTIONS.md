@@ -19,7 +19,8 @@ Create a new `.env` from `.env.example` instead of reusing another project's fil
 ```dotenv
 APP_ENV=development
 LOG_LEVEL=INFO
-CORS_ORIGINS=http://localhost:3000
+# Expo web normally runs on port 8081; include the deployed web origin separately.
+CORS_ORIGINS=http://localhost:3000,http://localhost:8081
 
 DATABASE_URL=
 SUPABASE_URL=
@@ -130,7 +131,7 @@ CORS. Example:
 ```json
 [
   {
-    "AllowedOrigins": ["http://localhost:3000", "https://app.example.com"],
+    "AllowedOrigins": ["http://localhost:3000", "http://localhost:8081", "https://app.example.com"],
     "AllowedMethods": ["PUT"],
     "AllowedHeaders": ["Content-Type"],
     "ExposeHeaders": ["ETag"],

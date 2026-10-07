@@ -27,7 +27,12 @@ class Settings(BaseSettings):
     app_env: Literal["development", "test", "staging", "production"] = "development"
     api_prefix: str = "/v1"
     log_level: str = "INFO"
-    cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
+    cors_origins: list[str] = Field(
+        default_factory=lambda: [
+            "http://localhost:3000",
+            "http://localhost:8081",
+        ]
+    )
 
     database_url: SecretStr | None = Field(default=None, repr=False)
     supabase_url: str | None = None

@@ -58,3 +58,19 @@ def test_analysis_routes_authenticate_before_checking_infrastructure() -> None:
     assert response.status_code == 401
     assert response.json()["error"]["code"] == "AUTH_REQUIRED"
     assert response.headers["www-authenticate"] == "Bearer"
+
+
+def test_expo_web_origin_can_call_the_api() -> None:
+    settings = _unconfigured_settings()
+
+    with TestClient(create_app(settings)) as client:
+        response = client.options(
+            "/v1/health/live",
+            headers={
+                "Origin": "http://localhost:8081",
+                "Access-Control-Request-Method": "GET",
+            },
+        )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://localhost:8081"
