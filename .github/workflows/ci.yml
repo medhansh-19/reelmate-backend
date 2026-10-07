@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg tesseract-ocr libsndfile1
+      - run: python -m pip install --upgrade pip && pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy app
+      - run: pytest --cov=app --cov-report=term-missing
+      - run: docker build -t reelmate-backend:test .
+
+  mobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: corepack enable
+      - run: corepack prepare pnpm@11.16.0 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm dlx expo-doctor@latest
+      - run: pnpm exec expo export --platform all

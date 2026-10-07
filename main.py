@@ -1,14 +1,5 @@
-from fastapi import FastAPI
-from routes import reel
+"""Compatibility entry point for ``uvicorn main:app``."""
 
-app = FastAPI(
-    title="ReelMate API",
-    description="AI Reel Coaching Backend",
-    version="1.0.0"
-)
+from app.main import app
 
-app.include_router(reel.router)
-
-@app.get("/health")
-def health():
-    return {"status": "ok", "message": "ReelMate API is running"}
+__all__ = ["app"]
